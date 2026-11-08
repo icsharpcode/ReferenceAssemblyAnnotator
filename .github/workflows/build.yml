@@ -15,6 +15,9 @@ jobs:
     runs-on: windows-2025-vs2026
     env:
       Configuration: Release
+      # The in-repo isolated cache (tests/NuGet.Config) exceeds MAX_PATH under msbuild.exe on the runner's deep checkout path.
+      # One run only ever sees one annotator version, so a shared short-path cache is safe here.
+      NUGET_PACKAGES: ${{ github.workspace }}\..\p
 
     steps:
     - uses: actions/checkout@v6
