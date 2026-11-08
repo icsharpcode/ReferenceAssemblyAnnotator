@@ -59,18 +59,22 @@
 
   <PropertyGroup>
     <Description>IL weaver for adding nullability annotations to .NET Framework and .NET Standard reference assemblies.</Description>
-    <Product>TunnelVisionLabs.ReferenceAssemblyAnnotator</Product>
-    <Company>Tunnel Vision Laboratories, LLC</Company>
-    <Copyright>Copyright © Tunnel Vision Laboratories, LLC 2019</Copyright>
+    <Product>ICSharpCode.ReferenceAssemblyAnnotator</Product>
+    <Company>ic#code</Company>
+    <Copyright>Copyright © Tunnel Vision Laboratories, LLC 2019; Copyright © ic#code $([System.DateTime]::Now.Year)</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Authors>sharwell</Authors>
-    <PackageProjectUrl>https://github.com/tunnelvisionlabs/ReferenceAssemblyAnnotator</PackageProjectUrl>
+    <Authors>ILSpy Contributors</Authors>
+    <PackageProjectUrl>https://github.com/icsharpcode/ReferenceAssemblyAnnotator</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/tunnelvisionlabs/ReferenceAssemblyAnnotator</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>nullable;nullability;reference-assemblies;msbuild;il-weaver</PackageTags>
+    <RepositoryUrl>https://github.com/icsharpcode/ReferenceAssemblyAnnotator.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
-    <IncludeSymbols>true</IncludeSymbols>
-    <IncludeSource>true</IncludeSource>
+    <!-- Symbols and sources travel inside the assembly (Source Link is built into the SDK). -->
+    <DebugType>embedded</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!--
       NU5105: The package version 'version' uses SemVer 2.0.0 or components of SemVer 1.0.0 that are not supported on
               legacy clients. Change the package version to a SemVer 1.0.0 string. If the version contains a release
@@ -78,6 +82,10 @@
               clients.
     -->
     <NoWarn>$(NoWarn),NU5105</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
 </Project>

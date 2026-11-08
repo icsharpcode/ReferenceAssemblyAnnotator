@@ -9,7 +9,7 @@ namespace CecilBasedAnnotator
     {
         private static void Main(string[] args)
         {
-            TunnelVisionLabs.ReferenceAssemblyAnnotator.Program.Main(
+            ICSharpCode.ReferenceAssemblyAnnotator.Program.Main(
                 log: null,
                 referenceAssembly: args[0],
                 targetFrameworkDirectories: args[1].Split(';').ToImmutableArray(),
