@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+    branches: '**'
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: read
+
+jobs:
+  Build:
+    # net35/net48 and WPF test projects plus the msbuild.exe engine need Windows with Visual Studio.
+    runs-on: windows-2025-vs2026
+    env:
+      Configuration: Release
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0  # Nerdbank.GitVersioning needs the history
+        persist-credentials: false
+
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '11.0.x'
+        dotnet-quality: 'preview'
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v3
+
+    - name: Build and pack
+      run: dotnet build ReferenceAssemblyAnnotator.sln -c $env:Configuration
+
+    - name: Test (dotnet msbuild)
+      run: ./build/test.ps1 -Configuration $env:Configuration -Engine dotnet
+
+    - name: Test (msbuild.exe)
+      run: ./build/test.ps1 -Configuration $env:Configuration -Engine msbuild
+
+    - name: Upload NuGet package
+      uses: actions/upload-artifact@v7
+      with:
+        name: nuget-package
+        path: ICSharpCode.ReferenceAssemblyAnnotator/bin/${{ env.Configuration }}/*.nupkg
+        if-no-files-found: error
