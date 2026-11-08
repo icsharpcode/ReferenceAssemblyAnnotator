@@ -44,7 +44,8 @@ foreach ($case in $cases) {
     Write-Host "=== [$Engine] $name" -ForegroundColor Cyan
 
     # Start clean so the isolated package cache never serves a stale package.
-    git -C $root clean -dxfq -- tests
+    # longpaths: package cache paths exceed MAX_PATH on deep checkouts (e.g. GitHub runners).
+    git -C $root -c core.longpaths=true clean -dxfq -- tests
     if ($LASTEXITCODE -ne 0) { throw 'git clean failed' }
 
     $buildArgs = @('-restore', (Join-Path $tests $case.Project), '-nr:false', '-v:m', "-p:Configuration=$Configuration") + $case.Args
