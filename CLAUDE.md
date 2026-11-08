@@ -16,7 +16,7 @@ dotnet build ReferenceAssemblyAnnotator.sln -c Release
 
 - `GeneratePackageOnBuild` is on: the build writes the `.nupkg` to `ICSharpCode.ReferenceAssemblyAnnotator/bin/<Configuration>/`. The version comes from Nerdbank.GitVersioning (`version.json`), so it only reflects committed changes.
 - `TreatWarningsAsErrors` is on outside Visual Studio; StyleCop.Analyzers (`stylecop.json`) and `ICSharpCode.ReferenceAssemblyAnnotator.ruleset` apply. Assemblies are strong-name signed (`build/Key.snk`).
-- The repo annotates its own references with the *published* `TunnelVisionLabs.ReferenceAssemblyAnnotator` (see `Directory.Build.props`), not the local build.
+- The repo annotates its own references with the *published* `TunnelVisionLabs.ReferenceAssemblyAnnotator` (see `Directory.Build.props`), not the local build. That old version still has the `GetElementType()` comparer bug fixed here. It only works because this repo's own TFMs never hit the bug, so switch to the published `ICSharpCode.*` package once it exists.
 - The task targets netstandard2.0 (dotnet MSBuild) and net472 (VS MSBuild) and compiles against MSBuild 17.8 (compile-only). Don't raise that to MSBuild 18: it drags in System.Collections.Immutable 10, which older hosts can't load.
 
 ## Tests
@@ -38,7 +38,7 @@ dotnet msbuild -restore tests/SingleTFM -p:TestFramework=netstandard2.0 -warnase
 - `tests/SingleTFM` is parameterized by `-p:TestFramework=` (net35 … net10.0); MultiTFM, RefVersion3.1.0, NoDisabledWarnings (uses `-p:TreatWarningsAsErrors=true`, since `-warnaserror` ignores `WarningsNotAsErrors`) and WPF cover the rest.
 - For netcoreapp3.x the SDK already adds a `PackageDownload` of `Microsoft.NETCore.App.Ref`; a second one fails with NU1505, so the test projects leave out their own for those TFMs.
 
-CI: `.github/workflows/build.yml` runs the same build and test script and uploads the nupkg.
+CI: `.github/workflows/build.yml` runs the same build and test script with both engines (Release only) and uploads the nupkg. On the runner, paths in the isolated cache exceed MAX_PATH under `msbuild.exe`. So the workflow sets `NUGET_PACKAGES` to a short path, which overrides `globalPackagesFolder`; that is safe because a run only ever contains one annotator version. `test.ps1` also passes `core.longpaths=true` to `git clean`.
 
 ## Architecture
 
