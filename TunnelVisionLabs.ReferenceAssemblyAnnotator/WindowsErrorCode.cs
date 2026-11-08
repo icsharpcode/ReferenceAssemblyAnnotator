@@ -6,7 +6,7 @@ namespace TunnelVisionLabs.ReferenceAssemblyAnnotator
     internal enum WindowsErrorCode : ushort
     {
         /// <summary>
-        /// https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-#error_file_exists
+        /// See https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-#error_file_exists.
         /// </summary>
         FileExists = 80,
     }

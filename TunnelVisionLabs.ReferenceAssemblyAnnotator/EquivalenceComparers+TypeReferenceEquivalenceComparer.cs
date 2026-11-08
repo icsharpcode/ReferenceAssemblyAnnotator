@@ -22,13 +22,14 @@ namespace TunnelVisionLabs.ReferenceAssemblyAnnotator
                 if (x is null || y is null)
                     return ReferenceEquals(x, y);
 
+                // GetElementType() returns the innermost type (dropping generic arguments), so compare ElementType.
                 if (x.IsByReference)
                 {
-                    return y.IsByReference && Equals(x.GetElementType(), y.GetElementType());
+                    return y.IsByReference && Equals(((TypeSpecification)x).ElementType, ((TypeSpecification)y).ElementType);
                 }
                 else if (x.IsPointer)
                 {
-                    return y.IsPointer && Equals(x.GetElementType(), y.GetElementType());
+                    return y.IsPointer && Equals(((TypeSpecification)x).ElementType, ((TypeSpecification)y).ElementType);
                 }
                 else if (x.IsGenericInstance)
                 {
@@ -44,7 +45,7 @@ namespace TunnelVisionLabs.ReferenceAssemblyAnnotator
 
                     return y.IsArray
                         && xArray.Dimensions.SequenceEqual(((ArrayType)y).Dimensions, ArrayDimensionEqualityComparer.Instance)
-                        && Equals(x.GetElementType(), y.GetElementType());
+                        && Equals(xArray.ElementType, ((ArrayType)y).ElementType);
                 }
 
                 if (x.IsNested)

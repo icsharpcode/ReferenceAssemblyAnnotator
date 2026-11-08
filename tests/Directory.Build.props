@@ -1,2 +1,11 @@
 <Project>
+
+  <PropertyGroup>
+    <!-- The tests deliberately cover end-of-life target frameworks and old packages. -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <NuGetAudit>false</NuGetAudit>
+    <!-- NETSDK1215: Targeting .NET Standard prior to 2.0 is no longer recommended. -->
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);NETSDK1215</MSBuildWarningsAsMessages>
+  </PropertyGroup>
+
 </Project>
