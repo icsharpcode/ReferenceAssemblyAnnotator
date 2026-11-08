@@ -28,8 +28,17 @@ published as `ICSharpCode.ReferenceAssemblyAnnotator`. To migrate, replace the p
     * System.Xml.Linq
 * .NET Standard targets
     * All assemblies which are defined by the .NET Standard
-* .NET Core targets
+* .NET Core targets before 3.0
     * All reference assemblies defined by .NET Core
+
+.NET Core 3.0 and newer are not annotated: their reference assemblies already carry nullable annotations. Don't add the
+`Microsoft.NETCore.App.Ref` `PackageDownload` for those target frameworks. The SDK may download that package itself, and
+a second download fails restore with NU1505. When multi-targeting, condition it, for example:
+
+```xml
+<!-- <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks> -->
+<PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[10.0.0]" Condition="'$(TargetFramework)' != 'net10.0'" />
+```
 
 ### Example configuration
 

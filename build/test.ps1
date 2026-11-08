@@ -3,7 +3,10 @@
 param(
     [string]$Configuration = 'Debug',
     [ValidateSet('dotnet', 'msbuild')]
-    [string]$Engine = 'dotnet'
+    [string]$Engine = 'dotnet',
+    # NuGet packages folder for the test restores. Default: tests/.isolatednugetcache, wiped before every case.
+    # CI passes a short path outside the checkout instead (MAX_PATH under msbuild.exe); that is not wiped.
+    [string]$PackagesPath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -12,6 +15,11 @@ $tests = Join-Path $root 'tests'
 
 # tests/NuGet.Config resolves the local package source through this variable.
 $env:CONFIGURATION = $Configuration
+
+# Set NUGET_PACKAGES explicitly: an inherited value (e.g. a machine-wide cache) overrides globalPackagesFolder in
+# tests/NuGet.Config, and would then serve a stale annotator package with the same version as the one just built.
+if (-not $PackagesPath) { $PackagesPath = Join-Path $tests '.isolatednugetcache' }
+$env:NUGET_PACKAGES = $PackagesPath
 
 if ($Engine -eq 'msbuild') {
     $msbuild = (Get-Command msbuild.exe -ErrorAction SilentlyContinue).Source

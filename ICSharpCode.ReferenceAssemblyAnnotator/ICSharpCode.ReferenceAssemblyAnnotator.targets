@@ -23,7 +23,10 @@
     <EmbeddedFiles Condition="'$(DebugType)' != 'none'" Include="$(NullableAttributesPath)" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <!-- .NET Core 3.0+ reference assemblies already carry nullable annotations, so there is nothing to annotate and no
+       Microsoft.NETCore.App.Ref PackageDownload is required. Whether the SDK adds its own download of that package
+       depends on whether the targeting pack is installed, so a project-level one can't be made to work reliably there. -->
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp' OR '$(TargetFrameworkVersion.Substring(1))' &lt; '3.0'">
     <ResolveAssemblyReferencesDependsOn>
       $(ResolveAssemblyReferencesDependsOn);
       AnnotateReferenceAssemblies;

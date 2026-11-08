@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-An IL weaver shipped as a NuGet package (`ICSharpCode.ReferenceAssemblyAnnotator`, the continuation of `TunnelVisionLabs.ReferenceAssemblyAnnotator`). At build time in a consuming project it takes un-annotated reference assemblies (.NET Framework, .NET Standard, .NET Core < 3.0) and copies nullability attributes onto them from the annotated `Microsoft.NETCore.App.Ref` package the consumer pulls via `<PackageDownload>`. The project then compiles against the annotated copies.
+An IL weaver shipped as a NuGet package (`ICSharpCode.ReferenceAssemblyAnnotator`, the continuation of `TunnelVisionLabs.ReferenceAssemblyAnnotator`). At build time in a consuming project it takes un-annotated reference assemblies (.NET Framework, .NET Standard, .NET Core < 3.0; .NET Core 3.0+ is skipped because it is already annotated) and copies nullability attributes onto them from the annotated `Microsoft.NETCore.App.Ref` package the consumer pulls via `<PackageDownload>`. The project then compiles against the annotated copies.
 
 ## Build
 
@@ -28,23 +28,24 @@ There is no unit test project. The tests are sample projects under `tests/` that
 ./build/test.ps1 -Configuration Release -Engine msbuild   # VS msbuild.exe (found via vswhere)
 ```
 
-The script runs `git clean -dxf tests` before every case, because `tests/NuGet.Config` uses an isolated package cache, and sets `CONFIGURATION` for that config's local source. Source mapping forces `ICSharpCode.ReferenceAssemblyAnnotator` to come from `ICSharpCode.ReferenceAssemblyAnnotator/bin/<Configuration>`. To run a single case by hand:
+The script sets `NUGET_PACKAGES` to the isolated cache `tests/.isolatednugetcache` (an inherited machine-wide `NUGET_PACKAGES` would override `globalPackagesFolder` and serve a stale package with the same version), runs `git clean -dxf tests` before every case, and sets `CONFIGURATION` for the local source in `tests/NuGet.Config`. Source mapping forces `ICSharpCode.ReferenceAssemblyAnnotator` to come from `ICSharpCode.ReferenceAssemblyAnnotator/bin/<Configuration>`. To run a single case by hand:
 
 ```
-$env:CONFIGURATION='Release'; git clean -dxf tests
+$env:CONFIGURATION='Release'; $env:NUGET_PACKAGES="$PWD\tests\.isolatednugetcache"; git clean -dxf tests
 dotnet msbuild -restore tests/SingleTFM -p:TestFramework=netstandard2.0 -warnaserror -nr:false -v:m
 ```
 
 - `tests/SingleTFM` is parameterized by `-p:TestFramework=` (net35 … net10.0); MultiTFM, RefVersion3.1.0, NoDisabledWarnings (uses `-p:TreatWarningsAsErrors=true`, since `-warnaserror` ignores `WarningsNotAsErrors`) and WPF cover the rest.
-- For netcoreapp3.x the SDK already adds a `PackageDownload` of `Microsoft.NETCore.App.Ref`; a second one fails with NU1505, so the test projects leave out their own for those TFMs.
+- The test projects leave out the `Microsoft.NETCore.App.Ref` `PackageDownload` for .NET Core 3.0+ (netcoreapp3.x, net10.0). Those aren't annotated, and the SDK adds its own download whenever the targeting pack isn't installed, so a second one fails with NU1505. The `GetHashCode` line in the test sources is `#if !NETCOREAPP3_0_OR_GREATER` because only annotated TFMs get `[DisallowNull]` removed (`Program.IsExcludedAnnotation`).
+- Keep the local source path in `tests/NuGet.Config` with forward slashes: with backslashes, source mapping doesn't match it on Linux/macOS (NU1100).
 
-CI: `.github/workflows/build.yml` runs the same build and test script with both engines (Release only) and uploads the nupkg. On the runner, paths in the isolated cache exceed MAX_PATH under `msbuild.exe`. So the workflow sets `NUGET_PACKAGES` to a short path, which overrides `globalPackagesFolder`; that is safe because a run only ever contains one annotator version. `test.ps1` also passes `core.longpaths=true` to `git clean`.
+CI: `.github/workflows/build.yml` runs the same build and test script with both engines (Release only) and uploads the nupkg. On the runner, paths in the isolated cache exceed MAX_PATH under `msbuild.exe`. So the workflow passes `-PackagesPath` with a short path outside the checkout; that cache isn't wiped between cases, which is safe because a run only ever contains one annotator version. `test.ps1` also passes `core.longpaths=true` to `git clean`.
 
 ## Architecture
 
 **MSBuild integration (most of the logic lives here)**: `ICSharpCode.ReferenceAssemblyAnnotator.props`/`.targets`, packed into `build/`. The file names must match the package ID.
 - `.props` picks the task DLL: `tools/net472/` for full MSBuild, `tools/netstandard2.0/` for `dotnet` (Core) MSBuild. The Mono.Cecil DLLs are packed next to it via `_GetFilesToPackage`.
-- `.targets` hooks `ResolveAssemblyReferencesDependsOn` with `AnnotateReferenceAssemblies` → `UpdateReferences`. It resolves the annotated source directory from the `Microsoft.NETCore.App.Ref` `PackageDownload` (errors RA0000–RA0002) and decides which references to annotate per target framework family: a hard-coded list for .NETFramework, framework-package references for .NETStandard/.NETCoreApp, and `ResolvedCompileFileDefinitionsToAdd` below 2.0. It writes the outputs to `$(IntermediateOutputPath)annotated\`, then swaps the `Reference` items and prepends that folder to `TargetFrameworkDirectory`.
+- `.targets` hooks `ResolveAssemblyReferencesDependsOn` with `AnnotateReferenceAssemblies` → `UpdateReferences`, except for .NETCoreApp >= 3.0. It resolves the annotated source directory from the `Microsoft.NETCore.App.Ref` `PackageDownload` (errors RA0000–RA0002) and decides which references to annotate per target framework family: a hard-coded list for .NETFramework, framework-package references for .NETStandard/.NETCoreApp, and `ResolvedCompileFileDefinitionsToAdd` below 2.0. It writes the outputs to `$(IntermediateOutputPath)annotated\`, then swaps the `Reference` items and prepends that folder to `TargetFrameworkDirectory`.
 - It also adds `NullableAttributes.cs`/`.vb` (internal copies of the nullable attributes) as `Compile` items unless the TFM already has them or `GenerateNullableAttributes=false`. The WPF `_GeneratedCodeFiles` line works around dotnet/wpf#810.
 
 **Weaver (C#)** in `ICSharpCode.ReferenceAssemblyAnnotator/`:
