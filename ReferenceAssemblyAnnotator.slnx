@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="global.json" />
+    <File Path="stylecop.json" />
+  </Folder>
+  <Project Path="CecilBasedAnnotator/CecilBasedAnnotator.csproj" />
+  <Project Path="ICSharpCode.ReferenceAssemblyAnnotator/ICSharpCode.ReferenceAssemblyAnnotator.csproj" />
+</Solution>
