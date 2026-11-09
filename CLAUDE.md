@@ -11,7 +11,7 @@ An IL weaver shipped as a NuGet package (`ICSharpCode.ReferenceAssemblyAnnotator
 `global.json` selects the newest installed SDK 11 (prerelease allowed). Windows is required for the full test matrix (net35/net48, WPF, msbuild.exe).
 
 ```
-dotnet build ReferenceAssemblyAnnotator.sln -c Release
+dotnet build ReferenceAssemblyAnnotator.slnx -c Release
 ```
 
 - `GeneratePackageOnBuild` is on: the build writes the `.nupkg` to `ICSharpCode.ReferenceAssemblyAnnotator/bin/<Configuration>/`. The version comes from Nerdbank.GitVersioning (`version.json`), so it only reflects committed changes.

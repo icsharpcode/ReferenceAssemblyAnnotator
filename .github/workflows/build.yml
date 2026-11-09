@@ -34,7 +34,7 @@ jobs:
       uses: microsoft/setup-msbuild@v3
 
     - name: Build and pack
-      run: dotnet build ReferenceAssemblyAnnotator.sln -c $env:Configuration
+      run: dotnet build ReferenceAssemblyAnnotator.slnx -c $env:Configuration
 
     - name: Test (dotnet msbuild)
       run: ./build/test.ps1 -Configuration $env:Configuration -Engine dotnet -PackagesPath $env:TestPackages
