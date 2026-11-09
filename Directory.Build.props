@@ -37,7 +37,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TunnelVisionLabs.ReferenceAssemblyAnnotator" Version="1.0.0-alpha.160" PrivateAssets="all" />
+    <PackageReference Include="ICSharpCode.ReferenceAssemblyAnnotator" Version="2.0.0-preview.7" PrivateAssets="all" />
     <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[$(AnnotatedReferenceAssemblyVersion)]" />
   </ItemGroup>
 
