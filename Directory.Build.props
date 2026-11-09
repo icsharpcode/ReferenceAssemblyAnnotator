@@ -29,26 +29,21 @@
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)build\Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <!-- Use the 16.4 compiler -->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.4.0" PrivateAssets="all" />
-  </ItemGroup>
-
   <!-- Enable nullable reference types -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
-    <AnnotatedReferenceAssemblyVersion>3.1.0</AnnotatedReferenceAssemblyVersion>
+    <AnnotatedReferenceAssemblyVersion>10.0.0</AnnotatedReferenceAssemblyVersion>
     <GenerateNullableAttributes>false</GenerateNullableAttributes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TunnelVisionLabs.ReferenceAssemblyAnnotator" Version="1.0.0-alpha.138" PrivateAssets="all" />
+    <PackageReference Include="TunnelVisionLabs.ReferenceAssemblyAnnotator" Version="1.0.0-alpha.160" PrivateAssets="all" />
     <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[$(AnnotatedReferenceAssemblyVersion)]" />
   </ItemGroup>
 
   <!-- Code style -->
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.66" PrivateAssets="all" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,23 +54,27 @@
 
   <!-- Versioning and packaging -->
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.94" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
     <Description>IL weaver for adding nullability annotations to .NET Framework and .NET Standard reference assemblies.</Description>
-    <Product>TunnelVisionLabs.ReferenceAssemblyAnnotator</Product>
-    <Company>Tunnel Vision Laboratories, LLC</Company>
-    <Copyright>Copyright © Tunnel Vision Laboratories, LLC 2019</Copyright>
+    <Product>ICSharpCode.ReferenceAssemblyAnnotator</Product>
+    <Company>ic#code</Company>
+    <Copyright>Copyright © Tunnel Vision Laboratories, LLC 2019; Copyright © ic#code $([System.DateTime]::Now.Year)</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Authors>sharwell</Authors>
-    <PackageProjectUrl>https://github.com/tunnelvisionlabs/ReferenceAssemblyAnnotator</PackageProjectUrl>
+    <Authors>ILSpy Contributors</Authors>
+    <PackageProjectUrl>https://github.com/icsharpcode/ReferenceAssemblyAnnotator</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/tunnelvisionlabs/ReferenceAssemblyAnnotator</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>nullable;nullability;reference-assemblies;msbuild;il-weaver</PackageTags>
+    <RepositoryUrl>https://github.com/icsharpcode/ReferenceAssemblyAnnotator.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
-    <IncludeSymbols>true</IncludeSymbols>
-    <IncludeSource>true</IncludeSource>
+    <!-- Symbols and sources travel inside the assembly (Source Link is built into the SDK). -->
+    <DebugType>embedded</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!--
       NU5105: The package version 'version' uses SemVer 2.0.0 or components of SemVer 1.0.0 that are not supported on
               legacy clients. Change the package version to a SemVer 1.0.0 string. If the version contains a release
@@ -83,6 +82,10 @@
               clients.
     -->
     <NoWarn>$(NoWarn),NU5105</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
 </Project>

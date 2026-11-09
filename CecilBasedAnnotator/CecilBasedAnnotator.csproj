@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <CodeAnalysisRuleSet>..\TunnelVisionLabs.ReferenceAssemblyAnnotator.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ICSharpCode.ReferenceAssemblyAnnotator.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TunnelVisionLabs.ReferenceAssemblyAnnotator\TunnelVisionLabs.ReferenceAssemblyAnnotator.csproj" />
+    <ProjectReference Include="..\ICSharpCode.ReferenceAssemblyAnnotator\ICSharpCode.ReferenceAssemblyAnnotator.csproj" />
   </ItemGroup>
 
 </Project>

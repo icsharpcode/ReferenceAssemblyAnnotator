@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29209.152
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CecilBasedAnnotator", "CecilBasedAnnotator\CecilBasedAnnotator.csproj", "{802A569B-9ABD-43C2-8A4D-4E9946023A44}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TunnelVisionLabs.ReferenceAssemblyAnnotator", "TunnelVisionLabs.ReferenceAssemblyAnnotator\TunnelVisionLabs.ReferenceAssemblyAnnotator.csproj", "{8133EC1F-B531-4094-A76E-F155E4117D30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ICSharpCode.ReferenceAssemblyAnnotator", "ICSharpCode.ReferenceAssemblyAnnotator\ICSharpCode.ReferenceAssemblyAnnotator.csproj", "{8133EC1F-B531-4094-A76E-F155E4117D30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51FA6781-3E2C-4F33-9A73-D789899E93B6}"
 	ProjectSection(SolutionItems) = preProject

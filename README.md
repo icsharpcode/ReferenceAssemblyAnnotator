@@ -1,18 +1,15 @@
-﻿# Reference Assembly Annotator
+# Reference Assembly Annotator
 
 IL weaver for adding nullability annotations to .NET Framework, .NET Standard, and .NET Core reference assemblies.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/pikrerggo7mi7dy5/branch/master?svg=true)](https://ci.appveyor.com/project/sharwell/referenceassemblyannotator/branch/master)
+[![Build](https://github.com/icsharpcode/ReferenceAssemblyAnnotator/actions/workflows/build.yml/badge.svg)](https://github.com/icsharpcode/ReferenceAssemblyAnnotator/actions/workflows/build.yml)
 
-[![codecov](https://codecov.io/gh/tunnelvisionlabs/ReferenceAssemblyAnnotator/branch/master/graph/badge.svg)](https://codecov.io/gh/tunnelvisionlabs/ReferenceAssemblyAnnotator)
-
-[![Join the chat at https://gitter.im/tunnelvisionlabs/ReferenceAssemblyAnnotator](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tunnelvisionlabs/ReferenceAssemblyAnnotator?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+This is the continuation of [TunnelVisionLabs.ReferenceAssemblyAnnotator](https://github.com/tunnelvisionlabs/ReferenceAssemblyAnnotator),
+published as `ICSharpCode.ReferenceAssemblyAnnotator`. To migrate, replace the package ID; the MSBuild properties and items are unchanged.
 
 ## Requirements
 
-* Build: C# compiler version 3.2 Beta 2 or newer (ships with Visual Studio 2019 version 16.3 Preview 2 and newer). Older
-  versions of the compiler interpret nullable metadata differently, which can lead to incorrect build warnings.
-* Editing experience: Visual Studio 2019 version 16.3 Preview 2 or newer.
+* Build: .NET SDK 8 or newer, or Visual Studio 2022 version 17.8 or newer.
 
 ## Usage
 
@@ -31,8 +28,17 @@ IL weaver for adding nullability annotations to .NET Framework, .NET Standard, a
     * System.Xml.Linq
 * .NET Standard targets
     * All assemblies which are defined by the .NET Standard
-* .NET Core targets
+* .NET Core targets before 3.0
     * All reference assemblies defined by .NET Core
+
+.NET Core 3.0 and newer are not annotated: their reference assemblies already carry nullable annotations. Don't add the
+`Microsoft.NETCore.App.Ref` `PackageDownload` for those target frameworks. The SDK may download that package itself, and
+a second download fails restore with NU1505. When multi-targeting, condition it, for example:
+
+```xml
+<!-- <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks> -->
+<PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[10.0.0]" Condition="'$(TargetFramework)' != 'net10.0'" />
+```
 
 ### Example configuration
 
@@ -46,10 +52,10 @@ IL weaver for adding nullability annotations to .NET Framework, .NET Standard, a
 </PropertyGroup>
 
 <ItemGroup>
-  <PackageReference Include="TunnelVisionLabs.ReferenceAssemblyAnnotator" Version="1.0.0-alpha.160" PrivateAssets="all" />
+  <PackageReference Include="ICSharpCode.ReferenceAssemblyAnnotator" Version="2.0.0-preview.*" PrivateAssets="all" />
 
   <!-- Specifies the version of Microsoft.NETCore.App.Ref to obtain nullability information from. -->
-  <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[5.0.0]" />
+  <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[10.0.0]" />
 </ItemGroup>
 ```
 
@@ -57,8 +63,8 @@ Minimal:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="TunnelVisionLabs.ReferenceAssemblyAnnotator" Version="1.0.0-alpha.160" PrivateAssets="all" />
-  <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[5.0.0]" />
+  <PackageReference Include="ICSharpCode.ReferenceAssemblyAnnotator" Version="2.0.0-preview.*" PrivateAssets="all" />
+  <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[10.0.0]" />
 </ItemGroup>
 ```
 
@@ -72,8 +78,8 @@ Minimal:
 
 ## Releases
 
-[![NuGet](https://img.shields.io/nuget/v/TunnelVisionLabs.ReferenceAssemblyAnnotator.svg)](https://www.nuget.org/packages/TunnelVisionLabs.ReferenceAssemblyAnnotator) [![NuGet Beta](https://img.shields.io/nuget/vpre/TunnelVisionLabs.ReferenceAssemblyAnnotator.svg)](https://www.nuget.org/packages/TunnelVisionLabs.ReferenceAssemblyAnnotator/absoluteLatest)
+[![NuGet](https://img.shields.io/nuget/vpre/ICSharpCode.ReferenceAssemblyAnnotator.svg)](https://www.nuget.org/packages/ICSharpCode.ReferenceAssemblyAnnotator)
 
-* [Binaries (NuGet)](https://www.nuget.org/packages/TunnelVisionLabs.ReferenceAssemblyAnnotator)
-* [Release Notes](https://github.com/tunnelvisionlabs/ReferenceAssemblyAnnotator/releases)
-* [License](https://github.com/tunnelvisionlabs/ReferenceAssemblyAnnotator/blob/master/LICENSE)
+* [Binaries (NuGet)](https://www.nuget.org/packages/ICSharpCode.ReferenceAssemblyAnnotator)
+* [Release Notes](https://github.com/icsharpcode/ReferenceAssemblyAnnotator/releases)
+* [License](https://github.com/icsharpcode/ReferenceAssemblyAnnotator/blob/master/LICENSE)
