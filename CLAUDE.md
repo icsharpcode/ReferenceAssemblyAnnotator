@@ -16,7 +16,7 @@ dotnet build ReferenceAssemblyAnnotator.sln -c Release
 
 - `GeneratePackageOnBuild` is on: the build writes the `.nupkg` to `ICSharpCode.ReferenceAssemblyAnnotator/bin/<Configuration>/`. The version comes from Nerdbank.GitVersioning (`version.json`), so it only reflects committed changes.
 - `TreatWarningsAsErrors` is on outside Visual Studio; StyleCop.Analyzers (`stylecop.json`) and `ICSharpCode.ReferenceAssemblyAnnotator.ruleset` apply. Assemblies are strong-name signed (`build/Key.snk`).
-- The repo annotates its own references with the *published* `TunnelVisionLabs.ReferenceAssemblyAnnotator` (see `Directory.Build.props`), not the local build. That old version still has the `GetElementType()` comparer bug fixed here. It only works because this repo's own TFMs never hit the bug, so switch to the published `ICSharpCode.*` package once it exists.
+- The repo annotates its own references with the *published* `ICSharpCode.ReferenceAssemblyAnnotator` (pinned in `Directory.Build.props`), not the local build; bump the pin when a release fixes something that matters for the repo's own TFMs. Because the project has the same ID, its `PackageId` is `ICSharpCode.ReferenceAssemblyAnnotator.NewIdRequiredDueToNuGetBug` during restore (otherwise NU1108 cycle) and is set back by the `RestorePackageId` target before the nuspec is generated.
 - The task targets netstandard2.0 (dotnet MSBuild) and net472 (VS MSBuild) and compiles against MSBuild 17.8 (compile-only). Don't raise that to MSBuild 18: it drags in System.Collections.Immutable 10, which older hosts can't load.
 
 ## Tests
