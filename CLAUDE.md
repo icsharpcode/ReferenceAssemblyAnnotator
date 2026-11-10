@@ -21,7 +21,13 @@ dotnet build ReferenceAssemblyAnnotator.slnx -c Release
 
 ## Tests
 
-There is no unit test project. The tests are sample projects under `tests/` that must build cleanly with warnings as errors against the locally built package. Build the solution first, then:
+`ICSharpCode.ReferenceAssemblyAnnotator.Tests` (xUnit v3 on Microsoft Testing Platform, net10.0) unit-tests the comparers and `Program.Annotate`/`AnnotateType` on in-memory Cecil modules built with `CecilBuilder`; it sees the weaver's internals via `InternalsVisibleTo`. `global.json` selects the MTP runner for `dotnet test`. After building the solution:
+
+```
+dotnet test --project ICSharpCode.ReferenceAssemblyAnnotator.Tests -c Release --no-build
+```
+
+The integration tests are sample projects under `tests/` that must build cleanly with warnings as errors against the locally built package. Build the solution first, then:
 
 ```
 ./build/test.ps1 -Configuration Release -Engine dotnet    # dotnet msbuild
@@ -39,7 +45,7 @@ dotnet msbuild -restore tests/SingleTFM -p:TestFramework=netstandard2.0 -warnase
 - The test projects leave out the `Microsoft.NETCore.App.Ref` `PackageDownload` for .NET Core 3.0+ (netcoreapp3.x, net10.0). Those aren't annotated, and the SDK adds its own download whenever the targeting pack isn't installed, so a second one fails with NU1505. The `GetHashCode` line in the test sources is `#if !NETCOREAPP3_0_OR_GREATER` because only annotated TFMs get `[DisallowNull]` removed (`Program.IsExcludedAnnotation`).
 - Keep the local source path in `tests/NuGet.Config` with forward slashes: with backslashes, source mapping doesn't match it on Linux/macOS (NU1100).
 
-CI: `.github/workflows/build.yml` runs the same build and test script with both engines (Release only) and uploads the nupkg. On the runner, paths in the isolated cache exceed MAX_PATH under `msbuild.exe`. So the workflow passes `-PackagesPath` with a short path outside the checkout; that cache isn't wiped between cases, which is safe because a run only ever contains one annotator version. `test.ps1` also passes `core.longpaths=true` to `git clean`.
+CI: `.github/workflows/build.yml` runs the same build, the unit tests and the test script with both engines (Release only) and uploads the nupkg. On the runner, paths in the isolated cache exceed MAX_PATH under `msbuild.exe`. So the workflow passes `-PackagesPath` with a short path outside the checkout; that cache isn't wiped between cases, which is safe because a run only ever contains one annotator version. `test.ps1` also passes `core.longpaths=true` to `git clean`.
 
 ## Architecture
 

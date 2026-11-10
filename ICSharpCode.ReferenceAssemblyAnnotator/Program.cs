@@ -89,7 +89,7 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
             }
         }
 
-        private static void AnnotateType(SuppressibleLoggingHelper? log, ModuleDefinition module, TypeDefinition typeDefinition, ModuleDefinition annotatedModuleDefinition, Dictionary<string, TypeDefinition> attributesOfInterest)
+        internal static void AnnotateType(SuppressibleLoggingHelper? log, ModuleDefinition module, TypeDefinition typeDefinition, ModuleDefinition annotatedModuleDefinition, Dictionary<string, TypeDefinition> attributesOfInterest)
         {
             if (attributesOfInterest.ContainsKey(typeDefinition.FullName))
                 return;
@@ -174,7 +174,7 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
             Annotate(module, fieldDefinition, annotatedFieldDefinition, attributesOfInterest);
         }
 
-        private static void Annotate(ModuleDefinition module, ICustomAttributeProvider provider, ICustomAttributeProvider annotatedProvider, Dictionary<string, TypeDefinition> attributesOfInterest)
+        internal static void Annotate(ModuleDefinition module, ICustomAttributeProvider provider, ICustomAttributeProvider annotatedProvider, Dictionary<string, TypeDefinition> attributesOfInterest)
         {
             // Start by removing excluded attributes as well as attributes of interest to allow, say, rewriting
             // netcoreapp3.1 to use .NET 5 reference annotations.
