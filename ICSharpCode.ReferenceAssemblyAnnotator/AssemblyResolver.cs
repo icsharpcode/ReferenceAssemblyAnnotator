@@ -11,19 +11,21 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
 
     internal sealed class AssemblyResolver : IAssemblyResolver
     {
-        private static readonly ReaderParameters DefaultReaderParameters = new ReaderParameters(ReadingMode.Deferred);
-
         private readonly ImmutableArray<string> _searchDirectories;
         private readonly Dictionary<string, AssemblyDefinition?> _assembliesByFileName = new Dictionary<string, AssemblyDefinition?>();
+
+        // Dependencies must resolve through this resolver too; Cecil's default one would find the build host's runtime.
+        private readonly ReaderParameters _readerParameters;
 
         public AssemblyResolver(ImmutableArray<string> searchDirectories)
         {
             _searchDirectories = searchDirectories;
+            _readerParameters = new ReaderParameters(ReadingMode.Deferred) { AssemblyResolver = this };
         }
 
         public AssemblyDefinition? Resolve(AssemblyNameReference name)
         {
-            return Resolve(name, DefaultReaderParameters);
+            return Resolve(name, _readerParameters);
         }
 
         public AssemblyDefinition? Resolve(AssemblyNameReference name, ReaderParameters parameters)

@@ -57,6 +57,12 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
             AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisNotNullAttribute);
             AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisNotNullIfNotNullAttribute);
             AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisNotNullWhenAttribute);
+            AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisMemberNotNullAttribute);
+            AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisMemberNotNullWhenAttribute);
+            AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisRequiresUnreferencedCodeAttribute);
+            AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisRequiresDynamicCodeAttribute);
+            AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisRequiresAssemblyFilesAttribute);
+            AddAttributeOfInterest(attributesOfInterest, wellKnownTypes.SystemDiagnosticsCodeAnalysisDynamicallyAccessedMembersAttribute);
 
             AnnotateAssembly(log, assemblyDefinition, annotatedAssemblyDefinition, attributesOfInterest);
 
@@ -216,7 +222,7 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
 
             static bool IsMatchingConstructor(MethodDefinition constructor, CustomAttribute customAttribute)
             {
-                if (constructor.Parameters.Count != customAttribute.ConstructorArguments.Count)
+                if (!constructor.IsConstructor || constructor.Parameters.Count != customAttribute.ConstructorArguments.Count)
                     return false;
 
                 for (int i = 0; i < constructor.Parameters.Count; i++)

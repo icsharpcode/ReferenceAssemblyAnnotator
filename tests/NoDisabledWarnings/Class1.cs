@@ -19,5 +19,10 @@ namespace Sample1
             _ = EqualityComparer<string?>.Default.GetHashCode(x);
 #endif
         }
+
+#if !NET35 && !NETCOREAPP3_0 && !NETCOREAPP3_1
+        // Task.IsFaulted carries [MemberNotNullWhen(true, nameof(Exception))]; without it this warns CS8602.
+        public static string F(System.Threading.Tasks.Task task) => task.IsFaulted ? task.Exception.Message : "";
+#endif
     }
 }
