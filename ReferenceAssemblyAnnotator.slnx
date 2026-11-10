@@ -7,5 +7,6 @@
     <File Path="stylecop.json" />
   </Folder>
   <Project Path="CecilBasedAnnotator/CecilBasedAnnotator.csproj" />
+  <Project Path="ICSharpCode.ReferenceAssemblyAnnotator.Tests/ICSharpCode.ReferenceAssemblyAnnotator.Tests.csproj" />
   <Project Path="ICSharpCode.ReferenceAssemblyAnnotator/ICSharpCode.ReferenceAssemblyAnnotator.csproj" />
 </Solution>

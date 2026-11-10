@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\ICSharpCode.ReferenceAssemblyAnnotator.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.3" />
+    <!-- net10.0 references aren't annotated, and the SDK adds its own targeting pack download when it's missing (NU1505). -->
+    <PackageDownload Remove="Microsoft.NETCore.App.Ref" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ICSharpCode.ReferenceAssemblyAnnotator\ICSharpCode.ReferenceAssemblyAnnotator.csproj" />
+  </ItemGroup>
+
+</Project>
