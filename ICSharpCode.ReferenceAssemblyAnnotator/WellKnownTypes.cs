@@ -10,6 +10,7 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
 
     internal partial class WellKnownTypes
     {
+        private readonly WellKnownType _systemEnum = new PredefinedType(typeof(Enum));
         private readonly WellKnownType _systemAttribute = new PredefinedType(typeof(Attribute));
         private readonly WellKnownType _systemAttributeTargets = new PredefinedType(typeof(AttributeTargets));
         private readonly WellKnownType _systemAttributeUsageAttribute = new PredefinedType(typeof(AttributeUsageAttribute));
@@ -30,6 +31,14 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
         private readonly WellKnownType _systemDiagnosticsCodeAnalysisNotNullAttribute = new NotNullAttributeProvidedType();
         private readonly WellKnownType _systemDiagnosticsCodeAnalysisNotNullIfNotNullAttribute = new NotNullIfNotNullAttributeProvidedType();
         private readonly WellKnownType _systemDiagnosticsCodeAnalysisNotNullWhenAttribute = new NotNullWhenAttributeProvidedType();
+        private readonly WellKnownType _systemDiagnosticsCodeAnalysisMemberNotNullAttribute = new MemberNotNullAttributeProvidedType();
+        private readonly WellKnownType _systemDiagnosticsCodeAnalysisMemberNotNullWhenAttribute = new MemberNotNullWhenAttributeProvidedType();
+
+        private readonly WellKnownType _systemDiagnosticsCodeAnalysisRequiresUnreferencedCodeAttribute = new RequiresUnreferencedCodeAttributeProvidedType();
+        private readonly WellKnownType _systemDiagnosticsCodeAnalysisRequiresDynamicCodeAttribute = new RequiresDynamicCodeAttributeProvidedType();
+        private readonly WellKnownType _systemDiagnosticsCodeAnalysisRequiresAssemblyFilesAttribute = new RequiresAssemblyFilesAttributeProvidedType();
+        private readonly WellKnownType _systemDiagnosticsCodeAnalysisDynamicallyAccessedMembersAttribute = new DynamicallyAccessedMembersAttributeProvidedType();
+        private readonly WellKnownType _systemDiagnosticsCodeAnalysisDynamicallyAccessedMemberTypes = new DynamicallyAccessedMemberTypesProvidedType();
 
         public WellKnownTypes(AssemblyDefinition assemblyDefinition)
         {
@@ -79,11 +88,35 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
             SystemDiagnosticsCodeAnalysisNotNullWhenAttribute = new Lazy<TypeReference>(
                 () => _systemDiagnosticsCodeAnalysisNotNullWhenAttribute.GetOrCreateTypeReference(Module, this),
                 LazyThreadSafetyMode.ExecutionAndPublication);
+            SystemDiagnosticsCodeAnalysisMemberNotNullAttribute = new Lazy<TypeReference>(
+                () => _systemDiagnosticsCodeAnalysisMemberNotNullAttribute.GetOrCreateTypeReference(Module, this),
+                LazyThreadSafetyMode.ExecutionAndPublication);
+            SystemDiagnosticsCodeAnalysisMemberNotNullWhenAttribute = new Lazy<TypeReference>(
+                () => _systemDiagnosticsCodeAnalysisMemberNotNullWhenAttribute.GetOrCreateTypeReference(Module, this),
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+            SystemDiagnosticsCodeAnalysisRequiresUnreferencedCodeAttribute = new Lazy<TypeReference>(
+                () => _systemDiagnosticsCodeAnalysisRequiresUnreferencedCodeAttribute.GetOrCreateTypeReference(Module, this),
+                LazyThreadSafetyMode.ExecutionAndPublication);
+            SystemDiagnosticsCodeAnalysisRequiresDynamicCodeAttribute = new Lazy<TypeReference>(
+                () => _systemDiagnosticsCodeAnalysisRequiresDynamicCodeAttribute.GetOrCreateTypeReference(Module, this),
+                LazyThreadSafetyMode.ExecutionAndPublication);
+            SystemDiagnosticsCodeAnalysisRequiresAssemblyFilesAttribute = new Lazy<TypeReference>(
+                () => _systemDiagnosticsCodeAnalysisRequiresAssemblyFilesAttribute.GetOrCreateTypeReference(Module, this),
+                LazyThreadSafetyMode.ExecutionAndPublication);
+            SystemDiagnosticsCodeAnalysisDynamicallyAccessedMembersAttribute = new Lazy<TypeReference>(
+                () => _systemDiagnosticsCodeAnalysisDynamicallyAccessedMembersAttribute.GetOrCreateTypeReference(Module, this),
+                LazyThreadSafetyMode.ExecutionAndPublication);
+            SystemDiagnosticsCodeAnalysisDynamicallyAccessedMemberTypes = new Lazy<TypeReference>(
+                () => _systemDiagnosticsCodeAnalysisDynamicallyAccessedMemberTypes.GetOrCreateTypeReference(Module, this),
+                LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         public ModuleDefinition Module { get; }
 
         public TypeSystem TypeSystem => Module.TypeSystem;
+
+        public TypeReference SystemEnum => _systemEnum.GetOrCreateTypeReference(Module, this);
 
         public TypeReference SystemAttribute => _systemAttribute.GetOrCreateTypeReference(Module, this);
 
@@ -120,6 +153,20 @@ namespace ICSharpCode.ReferenceAssemblyAnnotator
         public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisNotNullIfNotNullAttribute { get; }
 
         public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisNotNullWhenAttribute { get; }
+
+        public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisMemberNotNullAttribute { get; }
+
+        public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisMemberNotNullWhenAttribute { get; }
+
+        public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisRequiresUnreferencedCodeAttribute { get; }
+
+        public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisRequiresDynamicCodeAttribute { get; }
+
+        public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisRequiresAssemblyFilesAttribute { get; }
+
+        public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisDynamicallyAccessedMembersAttribute { get; }
+
+        public Lazy<TypeReference> SystemDiagnosticsCodeAnalysisDynamicallyAccessedMemberTypes { get; }
 
         private static TypeDefinition ResolveRequiredWellKnownType(ModuleDefinition module, Type type)
         {

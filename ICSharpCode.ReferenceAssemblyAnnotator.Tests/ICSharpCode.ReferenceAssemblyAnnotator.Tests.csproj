@@ -14,7 +14,24 @@
     <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.3" />
     <!-- net10.0 references aren't annotated, and the SDK adds its own targeting pack download when it's missing (NU1505). -->
     <PackageDownload Remove="Microsoft.NETCore.App.Ref" />
+    <!-- Unannotated input for ProgramMainTests -->
+    <PackageDownload Include="NETStandard.Library" Version="[2.0.3]" />
   </ItemGroup>
+
+  <!-- ProgramMainTests annotates netstandard2.0's netstandard.dll with the net10.0 one this project compiles against. -->
+  <Target Name="AddProgramMainTestsPaths" BeforeTargets="GetAssemblyAttributes" DependsOnTargets="ResolveTargetingPackAssets">
+    <ItemGroup>
+      <_AnnotatedNetStandard Include="@(Reference)" Condition="'%(Filename)' == 'netstandard'" />
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>UnannotatedNetStandard</_Parameter1>
+        <_Parameter2>$([MSBuild]::EnsureTrailingSlash($(NuGetPackageRoot)))netstandard.library/2.0.3/build/netstandard2.0/ref/netstandard.dll</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>AnnotatedNetStandard</_Parameter1>
+        <_Parameter2>@(_AnnotatedNetStandard->'%(FullPath)')</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\ICSharpCode.ReferenceAssemblyAnnotator\ICSharpCode.ReferenceAssemblyAnnotator.csproj" />
